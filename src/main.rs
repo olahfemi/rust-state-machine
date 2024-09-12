@@ -1,13 +1,16 @@
 mod balances;
 mod system;
 
+type AccountId = String;
+type Balance = u128;
+
 // This is our main Runtime.
 // It accumulates all of the different pallets we want to use.
 /* TODO: Add the derive macro to implement the `Debug` trait for `Runtime`. */
 #[derive(Debug)]
 pub struct Runtime {
 	system: system::Pallet,
-	balances: balances::Pallet,
+	balances: balances::Pallet<AccountId, Balance>,
 }
 
 impl Runtime {
@@ -21,7 +24,7 @@ fn main() {
 	/* TODO: Create a mutable variable `runtime`, which is a new instance of `Runtime`. */
 	let mut runtime = Runtime::new();
 	/* TODO: Set the balance of `alice` to 100, allowing us to execute other transactions. */
-	runtime.balances.set_balance(&"alice".to_string(), 100);
+	runtime.balances.set_balance("alice".to_string(), 100);
 
 	// start emulating a block
 	/* TODO: Increment the block number in system. */
@@ -53,7 +56,7 @@ fn main() {
 		.balances
 		.transfer("alice".to_string(), "charlie".to_string(), 30)
 		.map_err(|e| eprintln!("{}", e));
-	
+
 	/* TODO: Print the final runtime state after all transactions. */
 	println!("{:#?}", _res);
 }
