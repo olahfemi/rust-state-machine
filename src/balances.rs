@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
-use crate::AccountId;
-use crate::Balance;
+use crate::types::AccountId;
+use crate::types::Balance;
 use num::Zero;
 use num::CheckedAdd;
 use num::CheckedSub;
@@ -64,7 +64,8 @@ where
 mod tests {
 	#[test]
 	fn init_balances() {
-		let mut balances = super::Pallet::new();
+		let mut balances = super::Pallet::<&'static str, u128>::new();
+
 
 		assert_eq!(balances.balance(&"alice".to_string()), 0);
 		balances.set_balance(&"alice".to_string(), 100);

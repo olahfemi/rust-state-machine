@@ -1,24 +1,25 @@
 /* TODO: You might need to update your imports. */
 use std::collections::BTreeMap;
+use crate::types::AccountId;
+use crate::types::BlockNumber;
+use crate::types::Nonce;
 
-type AccountId = String;
-type Nonce = u32;
-type BlockNumber = u32;
+
 
 /// This is the System Pallet.
 /// It handles low level state needed for your blockchain.
 /* TODO: Add the derive macro to implement the `Debug` trait for `Pallet`. */
 #[derive(Debug)]
-pub struct Pallet {
+pub struct Pallet <AccountId, BlockNumber, Nonce> {
 	/// The current block number.
 	/* TODO: Create a field `block_number` that stores a `u32`. */
 	block_number: BlockNumber,
 	/// A map from an account to their nonce.
 	/* TODO: Create a field `nonce` that is a `BTreeMap` from `String` to `u32`. */
-	nonce: BTreeMap<String, Nonce>,
+	nonce: BTreeMap<AccountId, Nonce>,
 }
 
-impl Pallet {
+impl Pallet <AccountId, BlockNumber, Nonce> {
 	/// Create a new instance of the System Pallet.
 	pub fn new() -> Self {
 		/* TODO: Return a new instance of the `Pallet` struct. */
