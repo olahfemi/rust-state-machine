@@ -25,7 +25,7 @@ where
 	}
 
 	// Set the balance of an account `who` to some `amount`.
-	pub fn set_balance(&mut self, who: AccountId, amount: Balance) {
+	pub fn set_balance(&mut self, who: &AccountId, amount: Balance) {
 		self.balances.insert(who.clone(), amount);
 	}
 
