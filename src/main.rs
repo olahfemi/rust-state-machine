@@ -1,4 +1,5 @@
 mod balances;
+mod support;
 mod system;
 
 // These are the concrete types we will use in our simple state machine.
@@ -26,7 +27,7 @@ impl system::Config for Runtime {
 }
 
 impl balances::Config for Runtime {
-	type Balance = types::Balance;
+    type Balance = types::Balance;
 }
 
 impl Runtime {

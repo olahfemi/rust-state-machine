@@ -1,13 +1,12 @@
 use num::traits::{CheckedAdd, CheckedSub, Zero};
 use std::collections::BTreeMap;
 
-/*
-    TODO: Combine all generic types and their trait bounds into a single `pub trait Config`.
-    When you are done, your `Pallet` can simply be defined with `Pallet<T: Config>`.
-*/
-
+/// The configuration trait for the Balances Module.
+/// Contains the basic types needed for handling balances.
 pub trait Config: crate::system::Config {
-	type Balance: Zero + CheckedSub + CheckedAdd + Copy;
+    /// A type which can represent the balance of an account.
+    /// Usually this is a large unsigned integer.
+    type Balance: Zero + CheckedSub + CheckedAdd + Copy;
 }
 
 /// This is the Balances Module.
@@ -19,12 +18,8 @@ pub struct Pallet<T: Config> {
     balances: BTreeMap<T::AccountId, T::Balance>,
 }
 
-/*
-    TODO: Update all of these functions to use your new configuration trait.
-*/
-
-impl<T: Config> Pallet<T>{
-    /// Create a new instance of the balances module.
+impl<T: Config> Pallet<T> {
+    // Create a new instance of the balances module.
     pub fn new() -> Self {
         Self { balances: BTreeMap::new() }
     }
@@ -48,7 +43,7 @@ impl<T: Config> Pallet<T>{
         caller: T::AccountId,
         to: T::AccountId,
         amount: T::Balance,
-    ) -> Result<(), &'static str> {
+    ) -> crate::support::DispatchResult {
         let caller_balance = self.balance(&caller);
         let to_balance = self.balance(&to);
 
@@ -64,21 +59,17 @@ impl<T: Config> Pallet<T>{
 
 #[cfg(test)]
 mod tests {
-    /*
-        TODO: Create a `struct TestConfig`, and implement `super::Config` on it with concrete types.
-        Use this struct to instantiate your `Pallet`.
-    */
-	struct TestConfig;
-	impl super::Config for TestConfig {
-		type AccountId = String;
-		type Balance = u32;
-	}
+    struct TestConfig;
 
-	impl crate::system::Config for TestConfig {
-		type AccountId = String;
+    impl crate::system::Config for TestConfig {
+        type AccountId = String;
         type BlockNumber = u32;
         type Nonce = u32;
-	}
+    }
+
+    impl super::Config for TestConfig {
+        type Balance = u128;
+    }
 
     #[test]
     fn init_balances() {
