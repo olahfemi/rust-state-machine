@@ -20,7 +20,8 @@ mod types {
 // These are all the calls which are exposed to the world.
 // Note that it is just an accumulation of the calls exposed by each module.
 pub enum RuntimeCall {
-    BalancesTransfer { to: types::AccountId, amount: types::Balance },
+    /* TODO: Turn this into a nested enum where variant `Balances` contains a `balances::Call`. */
+    Balances(balances::Call<Runtime>),
 }
 
 // This is our main Runtime.
@@ -84,8 +85,13 @@ impl crate::support::Dispatch for Runtime {
         // This match statement will allow us to correctly route `RuntimeCall`s
         // to the appropriate pallet level function.
         match runtime_call {
-            RuntimeCall::BalancesTransfer { to, amount } => {
-                self.balances.transfer(caller, to, amount)?;
+            /*
+                TODO:
+                Adjust this logic to handle the nested enums, and simply call the `dispatch` logic
+                on the balances call, rather than the function directly.
+            */
+            RuntimeCall::Balances(call) => {
+                self.balances.dispatch(caller, call)?;
             },
         }
         Ok(())
@@ -96,29 +102,32 @@ fn main() {
     // Create a new instance of the Runtime.
     // It will instantiate with it all the modules it uses.
     let mut runtime = Runtime::new();
+    let alice = "alice".to_string();
+    let bob = "bob".to_string();
+    let charlie = "charlie".to_string();
 
-    /*
-        TODO: Replace the logic above with a new `Block`.
-            - Set the block number to 1 in the `Header`.
-            - Move your existing transactions into extrinsic format, using the
-              `Extrinsic` and `RuntimeCall`.
-    */
+    // Initialize the system with some initial balance.
+    runtime.balances.set_balance(&alice, 100);
+
+    // Here are the extrinsics in our block.
+    // You can add or remove these based on the modules and calls you have set up.
     let block_1 = types::Block {
         header: support::Header { block_number: 1 },
         extrinsics: vec![
+            /* TODO: Update your extrinsics to use the nested enum. */
             support::Extrinsic {
-                caller: "alice".to_string(),
-                call: RuntimeCall::BalancesTransfer { to: "bob".to_string(), amount: 69 },
+                caller: alice.clone(),
+                call: RuntimeCall::Balances(balances::Call::Transfer { to: bob, amount: 30 }),
+            },
+            support::Extrinsic {
+                caller: alice,
+                call: RuntimeCall::Balances(balances::Call::Transfer { to: charlie, amount: 20 }),
             },
         ],
-    };    
+    };
 
-    /*
-        TODO:
-        Use your `runtime` to call the `execute_block` function with your new block.
-        If the `execute_block` function returns an error, you should panic!
-        We `expect` that all the blocks being executed must be valid.
-    */
+    // Execute the extrinsics which make up our block.
+    // If there are any errors, our system panics, since we should not execute invalid blocks.
     runtime.execute_block(block_1).expect("invalid block");
 
     // Simply print the debug format of our runtime state.
