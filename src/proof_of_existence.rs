@@ -1,3 +1,4 @@
+use crate::support::DispatchResult;
 use core::fmt::Debug;
 use std::collections::BTreeMap;
 
@@ -14,14 +15,78 @@ pub trait Config: crate::system::Config {
 pub struct Pallet<T: Config> {
     /// A simple storage map from content to the owner of that content.
     /// Accounts can make multiple different claims, but each claim can only have one owner.
-    /* TODO: Add a field `claims` which is a `BTreeMap` fom `T::Content` to `T::AccountId`. */
     claims: BTreeMap<T::Content, T::AccountId>,
 }
 
 impl<T: Config> Pallet<T> {
     /// Create a new instance of the Proof of Existence Module.
     pub fn new() -> Self {
-        /* TODO: Return a new instance of the `Pallet` struct. */
         Self { claims: BTreeMap::new() }
     }
+
+    /// Get the owner (if any) of a claim.
+    pub fn get_claim(&self, claim: &T::Content) -> Option<&T::AccountId> {
+        /* TODO: `get` the `claim` */
+        self.claims.get(claim)
+    }
+
+    /// Create a new claim on behalf of the `caller`.
+    /// This function will return an error if someone already has claimed that content.
+    pub fn create_claim(&mut self, caller: T::AccountId, claim: T::Content) -> DispatchResult {
+        /* TODO: Check that a `claim` does not already exist. If so, return an error. */
+        if self.claims.contains_key(&claim) {
+            return Err(&"this content is already claimed");
+        }
+        
+        /* TODO: `insert` the claim on behalf of `caller`. */
+        self.claims.insert(claim, caller);
+        Ok(())
+    }
+
+    /// Revoke an existing claim on some content.
+    /// This function should only succeed if the caller is the owner of an existing claim.
+    /// It will return an error if the claim does not exist, or if the caller is not the owner.
+    pub fn revoke_claim(&mut self, caller: T::AccountId, claim: T::Content) -> DispatchResult {
+        /* TODO: Get the owner of the `claim` to be revoked. */
+       let owner = self.get_claim(&claim).ok_or("claim does not exist")?;
+        /* TODO: Check that the `owner` matches the `caller`. */
+        /* TODO: If all checks pass, then `remove` the `claim`. */
+        if caller != *owner {
+            return Err("this content is owned by someone else");
+        }
+        self.claims.remove(&claim);
+        Ok(())
+    }
+}
+
+#[cfg(test)]
+mod test {
+    struct TestConfig;
+
+    impl super::Config for TestConfig {
+        type Content = &'static str;
+    }
+
+    impl crate::system::Config for TestConfig {
+        type AccountId = &'static str;
+        type BlockNumber = u32;
+        type Nonce = u32;
+    }
+
+    #[test]
+    fn basic_proof_of_existence() {
+
+        let mut claims = super::Pallet::<TestConfig>::new();
+
+        assert_eq!(claims.get_claim(&"Alice"), None);
+        assert_eq!(claims.create_claim(&"Alice", "Hello, world!"), Ok(()));
+        assert_eq!(claims.get_claim(&"Hello, world!"), Some(&"Alice"));
+        assert_eq!(
+            claims.create_claim("Bob", "Hello, world!"),
+            Err("this content is already claimed")
+        );
+        assert_eq!(claims.revoke_claim("Alice", "Hello, world!"), Ok(()));
+        assert_eq!(claims.create_claim("Bob", "Hello, world!"), Ok(()));
+    }
+
 }
