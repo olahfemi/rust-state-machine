@@ -2,6 +2,10 @@ name: CI # Continuous Integration
 
 on:
   pull_request:
+
+env:
+  CARGO_INCREMENTAL: 0
+  CARGO_TERM_COLOR: always
   
 jobs:
   fmt:
@@ -9,5 +13,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - name: Update Rust toolchain
+        run: actions-rust-lang/setup-rust-toolchain@v1
       - name: Check formatting
         run: cargo fmt --check --all
