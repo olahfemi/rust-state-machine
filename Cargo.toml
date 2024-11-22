@@ -2,6 +2,8 @@
 name = "rust-state-machine"
 version = "0.1.0"
 edition = "2021"
+license = "Apache-2.0"
+description = "Rust State Machine"
 
 [dependencies]
 num = "0.4.3"
