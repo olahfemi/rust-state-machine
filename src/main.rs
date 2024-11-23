@@ -5,7 +5,7 @@ mod system;
 
 use crate::support::Dispatch;
 
-cont a = 0;
+const a = 0;
 const b = 1;
 const c = 2;
 if c > 3 {}
