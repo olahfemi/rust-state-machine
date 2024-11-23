@@ -15,7 +15,7 @@ pub trait Config: crate::system::Config {
 #[derive(Debug)]
 pub struct Pallet<T: Config> {
 	// A simple storage mapping from accounts to their balances.
-	balances: BTreeMap<T::AccountId, T::Balance>,
+	  balances: BTreeMap<T::AccountId, T::Balance>,
 }
 
 impl<T: Config> Pallet<T> {
