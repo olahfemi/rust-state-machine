@@ -5,10 +5,10 @@ mod system;
 
 use crate::support::Dispatch;
 
-let a = 0;
-let b = 1;
-let c = 2;
-if c>= 1 + 3 {}
+cont a = 0;
+const b = 1;
+const c = 2;
+if c > 3 {}
 
 // These are the concrete types we will use in our simple state machine.
 // Modules are configured for these types directly, and they satisfy all of our
