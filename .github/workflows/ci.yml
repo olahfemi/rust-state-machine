@@ -14,7 +14,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Update Rust toolchain
-        run: actions-rust-lang/setup-rust-toolchain@v1
+        run: rustup update stable --no-self-update
       - name: Check formatting
         run: cargo fmt --check --all
 
