@@ -31,6 +31,8 @@ jobs:
           steps:
             - name: Checkout repository
               uses: actions/checkout@v4
-            - name: Check Test
+                    - name: Update Rust toolchain
+        run: rustup update stable --no-self-update
+            - name: Run test
               run: cargo test
         
