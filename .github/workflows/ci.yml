@@ -34,5 +34,17 @@ jobs:
             - name: Update Rust toolchain
               run: rustup update stable --no-self-update
             - name: Run test
-              run: cargo test
+              run: cargo test --all-features --workspace
+
+  doc:
+          runs-on: ubuntu-24.04
+          steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+            - name: Update Rust toolchain
+              run: rustup update stable --no-self-update
+            - name: Check docs
+              run: cargo doc
+              env:
+                RUSTDOCFLAGS: -D warnings
         
