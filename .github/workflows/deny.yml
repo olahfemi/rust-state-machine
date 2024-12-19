@@ -1,0 +1,11 @@
+name: Deny
+
+on: 
+  pull_request:
+
+jobs:
+  deny:
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v4
+    - uses: EmbarkStudios/cargo-deny-action@v2
