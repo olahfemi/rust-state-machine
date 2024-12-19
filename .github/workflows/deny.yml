@@ -1,0 +1,14 @@
+name: Deny
+
+on: 
+  pull_request:
+  schedule:
+    # Runs at 00:00 UTC every day 
+    - cron: '0 0 * * *'
+
+jobs:
+  deny:
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v4
+    - uses: EmbarkStudios/cargo-deny-action@v2
